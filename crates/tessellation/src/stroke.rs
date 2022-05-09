@@ -1219,7 +1219,7 @@ impl<'l> StrokeBuilderImpl<'l> {
             }
 
             let (p0, p1) = self.point_buffer.last_two_mut();
-            // TODO: This is hacky: We re-create the first two vertices on the edge towards the second endpoint 
+            // TODO: This is hacky: We re-create the first two vertices on the edge towards the second endpoint
             // so that they use the advancement value of the start of the sub path instead of the end of the
             // sub path as computed in the step_impl above.
             self.vertex.src = p0.src;
@@ -1232,6 +1232,12 @@ impl<'l> StrokeBuilderImpl<'l> {
                     (pos - p0.position) / p0.half_width
                 } else {
                     (p0.side_points[side].next - p0.position) / p0.half_width
+                };
+
+                self.vertex.side = if side == SIDE_POSITIVE {
+                    Side::Positive
+                } else {
+                    Side::Negative
                 };
 
                 let vertex = self.output.add_stroke_vertex(StrokeVertex(&mut self.vertex, attributes))?;
